@@ -1,3 +1,3 @@
 # BitrateViewer
 
-![image](screenshot/main.png)
+![image](screenshots/main.png)
