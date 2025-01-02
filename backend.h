@@ -25,6 +25,8 @@ typedef struct CalcResult{
     float* bitrates;
     int64_t* pts; 
     char* pict_type;
+    int* key;
+    int* pkt_size;
     int length;
     float avg;
 } CalcResult;

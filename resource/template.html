@@ -19,6 +19,7 @@
     var option;
 
 const data = generateData();
+const gopInfo = gopCalc(data);
 option = {
   title: {
     text: data.name,
@@ -46,18 +47,19 @@ option = {
       show:true,
       snap: true,
       formatter: function (params){
-        return `frame: ${params.value}|${pts2time(data.pts[params.value])}|${data.pict_type[params.value]}`
+        return `frame: ${params.value}|${pts2time(data.pts[params.value])}|${data.pict_type[params.value]}\ngop:  ${gopInfo[params.value][0]}-${gopInfo[params.value][1]}\n         ${gopInfo[params.value][2].toFixed(3)} kbps`
         }
       }
     },
-    valueFormatter: (value) => `${value} kbps`
+    valueFormatter: (value,index) => `${value} kbps`
   },
   grid: {
     bottom: 90
   },
   dataZoom: [
     {
-      type: 'inside'
+      type: 'inside',
+      filterMode : 'filterd'
     },
     {
       type: 'slider'
@@ -123,13 +125,17 @@ option = {
 };
 function generateData() {
   {{{datas}}}
+
   return {
     x: x,
     y: y,
     pts: pts,
-    pict_type:pict_type,
-    avg:avg,
-    name:name
+    pkt_size: pkt_size,
+    pict_type: pict_type,
+    key : key,
+    avg: avg,
+    length: length,
+    name: name
   };
 }
 
@@ -149,6 +155,49 @@ function pts2time(pts){
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(ms).padEnd(3, '0')}`;
 }
 
+function gopCalc(data){
+  var length=data.length;
+  console.log(length);
+  var gopInfo=[];
+
+  var start=0;
+  var end=0;
+  var avg=0;
+  var sum=0;
+  var dur=0;
+  for (let i=0; i<length; i++){
+    if (data.key[i]==1){
+            start=i;
+            sum=data.pkt_size[i]
+        }
+    else{
+        sum+=data.pkt_size[i]
+    }
+
+    if (i==length-1) {
+        end=i;
+    }
+    else{
+        if(data.key[i+1]==1){
+            end=i;
+        }
+    }
+    
+    if (end==i){
+        if (end==length-1){
+            dur=data.pts[end]-data.pts[start]+data.pts[end]-data.pts[end-1];
+        }
+        else{
+            dur=data.pts[end+1]-data.pts[start];
+        }
+        var info=[start,end,8*sum/dur];
+        for(let j=0;j<end-start+1;j++){
+            gopInfo.push(info);
+        }
+    }
+  }
+  return gopInfo
+}
     if (option && typeof option === 'object') {
       myChart.setOption(option);
     }

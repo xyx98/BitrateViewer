@@ -138,12 +138,16 @@ CalcResult Backend::calc(std::vector<FrameInfo> FrameInfoArray){
     result.bitrates = (float*)calloc(length,sizeof(float));
     result.pts = (int64_t*)calloc(length,sizeof(int64_t));
     result.pict_type = (char*)calloc(length,sizeof(char));
+    result.key = (int*)calloc(length,sizeof(int));
+    result.pkt_size = (int*)calloc(length,sizeof(int));
     result.length=length;
     int totalsize =0 ;
 
     for(int i=0;i<length;i++){
         result.frames[i]=i;
         result.pict_type[i]=FrameInfoArray[i].pict_type;
+        result.key[i]=FrameInfoArray[i].keyframe;
+        result.pkt_size[i]=FrameInfoArray[i].pkt_size;
         if (i<length-1) result.bitrates[i]=8.0 * FrameInfoArray[i].pkt_size/(FrameInfoArray[i+1].pts-FrameInfoArray[i].pts);
         else result.bitrates[i]=8.0 * FrameInfoArray[i].pkt_size/FrameInfoArray[i].duration;
         result.pts[i]=FrameInfoArray[i].pts;

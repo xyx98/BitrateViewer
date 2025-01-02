@@ -47,7 +47,6 @@ void MainWindow::setup_polt(std::string path,bool useCache,std::string filename)
     }
     CurrentResult = Backend::calc(FrameInfoArray);
     std::string html=Plot.applydata(CurrentResult,filename);
-    //plot::savehtml("E:\\coding\\test\\test\\tmp.html",html);
     ui->webEngineView->setHtml(QString::fromStdString(html));
     return;
 }
@@ -63,7 +62,6 @@ void MainWindow::on_actionsave_triggered()
         fileinfo.filePath()+".html",
         tr("html (*.html)"));
     if (filename.isEmpty()){
-        //ui->webEngineView->setHtml("fail");
         return;
     }
     std::string html=Plot.applydata(CurrentResult,fileinfo.fileName().toStdString());

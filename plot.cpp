@@ -30,7 +30,10 @@ std::string plot::applydata(CalcResult result,std::string filename){
     ss <<"  y = "           << Backend::ArrayToStringNumber(result.bitrates,result.length)  << ";"      << std::endl;
     ss <<"  pts = "         << Backend::ArrayToStringNumber(result.pts,result.length)       << ";"      << std::endl;
     ss <<"  pict_type = "   << Backend::ArrayToStringChar(result.pict_type,result.length)   << ";"      << std::endl;
+    ss <<"  key = "         << Backend::ArrayToStringNumber(result.key,result.length)       << ";"      << std::endl;
+    ss <<"  pkt_size = "    << Backend::ArrayToStringNumber(result.pkt_size,result.length)  << ";"      << std::endl;
     ss <<"  avg = "         << result.avg                                                   << ";"      << std::endl;
+    ss <<"  length = "      << result.length                                                << ";"      << std::endl;
     ss <<"  name = \""      << filename                                                     << "\";"    << std::endl;
     std::regex expr("\\{\\{\\{datas\\}\\}\\}");
     return std::regex_replace(basehtml, expr, ss.str());;
