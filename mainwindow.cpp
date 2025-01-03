@@ -65,7 +65,7 @@ void MainWindow::on_actionsave_triggered()
         return;
     }
     std::string html=Plot.applydata(CurrentResult,fileinfo.fileName().toStdString());
-    plot::savehtml(filename.toStdString(),html);
+    plot::savehtml(filename.toLocal8Bit().toStdString(),html);
     return;
 }
 
