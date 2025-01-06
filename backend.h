@@ -36,6 +36,7 @@ class Backend{
     public:
     static std::vector<FrameInfo> loadvideo(std::string path);
     static std::vector<FrameInfo> loadcsv(std::string path);
+    static void savecsv(std::vector<FrameInfo> FrameInfoArray,std::string path);
     static CalcResult calc(std::vector<FrameInfo> FrameInfoArray);
     static void SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c);
     template<typename T> static std::string ArrayToStringNumber(T array[],int length);

@@ -176,6 +176,24 @@ void Backend::SplitString(const std::string& s, std::vector<std::string>& v, con
     v.push_back(s.substr(pos1));
 }
 
+void Backend::savecsv(std::vector<FrameInfo> FrameInfoArray,std::string path){
+    std::ofstream file;
+    file.open(path);
+    for (int i=0;i<FrameInfoArray.size();i++){
+        if (file.is_open()){
+            file    << i << "\t"
+                 << FrameInfoArray[i].pict_type << "\t"
+                 << FrameInfoArray[i].pkt_size << "\t"
+                 << FrameInfoArray[i].pts << "\t"
+                 << FrameInfoArray[i].keyframe << "\t"
+                 << FrameInfoArray[i].duration << std::endl;
+        }
+        else{
+            std::cout << "Failed to open the file:" << path << std::endl;
+        }
+    }
+    file.close();
+}
 
 template<typename T> std::string Backend::ArrayToStringNumber(T array[],int length){
     std::stringstream ss;

@@ -9,6 +9,7 @@ qt_add_executable(BitrateViewer
     WIN32 MACOSX_BUNDLE
     backend.h
     backend.cpp
+    sha1.hpp
     plot.h
     plot.cpp
     main.cpp

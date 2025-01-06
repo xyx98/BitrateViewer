@@ -5,6 +5,9 @@
 #include <QJsonObject>
 #include <QFileDialog>
 #include "plot.h"
+#include <filesystem>
+namespace fs = std::filesystem;
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -25,8 +28,11 @@ public:
     QString CurrentVideo;
     bool loaded;
     CalcResult CurrentResult;
+    fs::path workpath;
 
     void setup_polt(std::string path,bool useCache,std::string filename);
+    void setup_polt(std::string path,std::string filename,std::string savecache);
+    std::string checksum(QString path,int maxCalcSize);
 
 private slots:
 
