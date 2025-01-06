@@ -19,6 +19,9 @@
         -- Zlatko Michailov <zlatko@michailov.org>
 */
 
+// add some function for BitrateViewer project
+// to implement cache for BitrateViewer,no need to calculate whole video file
+
 #ifndef SHA1_HPP
 #define SHA1_HPP
 
@@ -37,8 +40,10 @@ public:
     SHA1();
     void update(const std::string &s);
     void update(std::istream &is);
+    void update(std::istream &is,uint32_t maxIter);
     std::string final();
     static std::string from_file(const std::string &filename);
+    static std::string from_file(const std::string &filename,uint32_t maxIter);
 
 private:
     uint32_t digest[5];
@@ -272,6 +277,28 @@ inline void SHA1::update(std::istream &is)
     }
 }
 
+//for BitrateViewer project
+inline void SHA1::update(std::istream &is,uint32_t maxIter)
+{
+    uint32_t iter=0;
+    while (true)
+    {
+
+        char sbuf[BLOCK_BYTES];
+        is.read(sbuf, BLOCK_BYTES - buffer.size());
+        buffer.append(sbuf, (std::size_t)is.gcount());
+        if (buffer.size() != BLOCK_BYTES)
+        {
+            return;
+        }
+        uint32_t block[BLOCK_INTS];
+        buffer_to_block(buffer, block);
+        transform(digest, block, transforms);
+        buffer.clear();
+        iter++;
+        if (iter>=maxIter) return;
+    }
+}
 
 /*
  * Add padding and return the message digest.
@@ -330,5 +357,13 @@ inline std::string SHA1::from_file(const std::string &filename)
     return checksum.final();
 }
 
+//for BitrateViewer project
+inline std::string SHA1::from_file(const std::string &filename,uint32_t maxIter)
+{
+    std::ifstream stream(filename.c_str(), std::ios::binary);
+    SHA1 checksum;
+    checksum.update(stream,maxIter);
+    return checksum.final();
+}
 
 #endif /* SHA1_HPP */
