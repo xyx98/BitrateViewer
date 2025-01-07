@@ -7,6 +7,7 @@ qt_standard_project_setup()
 
 qt_add_executable(BitrateViewer
     WIN32 MACOSX_BUNDLE
+    config.h
     backend.h
     backend.cpp
     sha1.hpp

@@ -15,7 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
     if (!fs::exists(workpath / ".cache")) fs::create_directory(workpath / ".cache");
     std::string html =plot::loadhtml(workpath.string()+"/resource/template.html");
     Plot.setBaseHtml(html);
-    CurrentVideo="";
+    CurrentHtml = (workpath / ".cache" / "Curr.html").string();
+    CurrentVideo = "";
     loaded=false;
     //ui->webEngineView->setHtml(QString::fromStdString(html));
 }
@@ -58,8 +59,10 @@ void MainWindow::setup_polt(std::string path,bool useCache,std::string filename)
         FrameInfoArray = Backend::loadvideo(path);
     }
     CurrentResult = Backend::calc(FrameInfoArray);
-    std::string html=Plot.applydata(CurrentResult,filename);
-    ui->webEngineView->setHtml(QString::fromStdString(html));
+    std::string html=Plot.applydata(CurrentResult,filename,false);
+    //ui->webEngineView->setHtml(QString::fromStdString(html));
+    plot::savehtml(CurrentHtml,html);
+    ui->webEngineView->load(QUrl::fromLocalFile(QString::fromLocal8Bit(CurrentHtml.data())));
     return;
 }
 
@@ -68,8 +71,10 @@ void MainWindow::setup_polt(std::string path,std::string filename,std::string sa
     FrameInfoArray = Backend::loadvideo(path);
     Backend::savecsv(FrameInfoArray,savecache);
     CurrentResult = Backend::calc(FrameInfoArray);
-    std::string html=Plot.applydata(CurrentResult,filename);
-    ui->webEngineView->setHtml(QString::fromStdString(html));
+    std::string html=Plot.applydata(CurrentResult,filename,false);
+    //ui->webEngineView->setHtml(QString::fromStdString(html));
+    plot::savehtml(CurrentHtml,html);
+    ui->webEngineView->load(QUrl::fromLocalFile(QString::fromLocal8Bit(CurrentHtml.data())));
     return;
 }
 
@@ -86,7 +91,7 @@ void MainWindow::on_actionsave_triggered()
     if (filename.isEmpty()){
         return;
     }
-    std::string html=Plot.applydata(CurrentResult,fileinfo.fileName().toStdString());
+    std::string html=Plot.applydata(CurrentResult,fileinfo.fileName().toStdString(),true);
     plot::savehtml(filename.toLocal8Bit().toStdString(),html);
     return;
 }

@@ -29,6 +29,7 @@ public:
     bool loaded;
     CalcResult CurrentResult;
     fs::path workpath;
+    std::string CurrentHtml;
 
     void setup_polt(std::string path,bool useCache,std::string filename);
     void setup_polt(std::string path,std::string filename,std::string savecache);

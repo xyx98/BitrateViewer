@@ -1,5 +1,6 @@
 #include "plot.h"
 #include "backend.h"
+#include "config.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -24,7 +25,7 @@ std::string plot::loadhtml(std::string path){
     return html;
 }
 
-std::string plot::applydata(CalcResult result,std::string filename){
+std::string plot::applydata(CalcResult result,std::string filename,bool isSave){
     std::stringstream ss;
     ss <<"x = "             << Backend::ArrayToStringNumber(result.frames,result.length)    << ";"      << std::endl;
     ss <<"  y = "           << Backend::ArrayToStringNumber(result.bitrates,result.length)  << ";"      << std::endl;
@@ -35,8 +36,16 @@ std::string plot::applydata(CalcResult result,std::string filename){
     ss <<"  avg = "         << result.avg                                                   << ";"      << std::endl;
     ss <<"  length = "      << result.length                                                << ";"      << std::endl;
     ss <<"  name = \""      << filename                                                     << "\";"    << std::endl;
-    std::regex expr("\\{\\{\\{datas\\}\\}\\}");
-    return std::regex_replace(basehtml, expr, ss.str());;
+    std::string res=plot::templateReplace(basehtml,ss.str(),"datas");
+    if (isSave){
+        res=plot::templateReplace(res,"true","isSave");
+        res=plot::templateReplace(res,ONLINE_ECHARTS,"echarts");
+    }
+    else{
+        res=plot::templateReplace(res,"false","isSave");
+        res=plot::templateReplace(res,"../"+std::string(OFFLINE_ECHARTS),"echarts");
+    }
+    return res;
 }
 
 void plot::savehtml(std::string path,std::string html){
@@ -45,3 +54,8 @@ void plot::savehtml(std::string path,std::string html){
     file << html;
     file.close();
 };
+
+inline std::string plot::templateReplace(std::string base,std::string data,std::string templ){
+    std::regex expr("\\{\\{\\{"+templ+"\\}\\}\\}");
+    return std::regex_replace(base, expr, data);
+}
