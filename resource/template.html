@@ -6,7 +6,7 @@
 <body style="height: 100%; margin: 0">
   <div id="container" style="height: 100%"></div>
   
-  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.6.0/files/dist/echarts.min.js"></script>
+  <script type="text/javascript" src="{{{echarts}}}"></script>
 
   <script type="text/javascript">
     var dom = document.getElementById('container');
@@ -33,7 +33,7 @@ option = {
       },
       saveAsImage: {
         pixelRatio: 2,
-        show: false
+        show: {{{isSave}}}
       }
     }
   },

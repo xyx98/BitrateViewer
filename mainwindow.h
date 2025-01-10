@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QJsonObject>
 #include <QFileDialog>
+#include <QtConcurrent/QtConcurrent>
 #include "plot.h"
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -26,7 +27,7 @@ public:
 
     plot Plot;
     QString CurrentVideo;
-    bool loaded;
+    int loadStatus;
     CalcResult CurrentResult;
     fs::path workpath;
     std::string CurrentHtml;
@@ -35,6 +36,12 @@ public:
     void setup_polt(std::string path,std::string filename,std::string savecache);
     std::string checksum(QString path,int maxCalcSize);
 
+
+signals:
+    void loadhtml(QUrl url);
+
+public slots:
+    void LoadHTML(QUrl url);
 private slots:
 
     void on_actionopen_triggered();
@@ -43,6 +50,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QFutureSynchronizer<void> synchronizer;
 };
 
 #endif // MAINWINDOW_H

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.19)
 project(BitrateViewer LANGUAGES CXX)
 
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets WebEngineWidgets)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets WebEngineWidgets Concurrent)
 qt_standard_project_setup()
 
 qt_add_executable(BitrateViewer
@@ -29,6 +29,7 @@ IF (WIN32)
             Qt::Core
             Qt::Widgets
             Qt::WebEngineWidgets
+            Qt::Concurrent
             ${ffmpeg_dir}/lib/avcodec.lib
             ${ffmpeg_dir}/lib/avformat.lib
             ${ffmpeg_dir}/lib/avutil.lib
@@ -41,6 +42,7 @@ ELSE ()
             Qt::Core
             Qt::Widgets
             Qt::WebEngineWidgets
+            Qt::Concurrent
             PkgConfig::ffmpeg
         )
 ENDIF ()

@@ -4,7 +4,6 @@
 #include "sha1.hpp"
 #include <QTimer>
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -17,8 +16,9 @@ MainWindow::MainWindow(QWidget *parent)
     Plot.setBaseHtml(html);
     CurrentHtml = (workpath / ".cache" / "Curr.html").string();
     CurrentVideo = "";
-    loaded=false;
-    //ui->webEngineView->setHtml(QString::fromStdString(html));
+    loadStatus=0; //-1:loading 0:unloaded 1:loaded
+
+    connect(this,SIGNAL(loadhtml(QUrl)),this,SLOT(LoadHTML(QUrl)));
 }
 
 MainWindow::~MainWindow()
@@ -26,8 +26,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
 void MainWindow::on_actionopen_triggered()
 {
+    if (loadStatus <= -1) return;
     QString filename = QFileDialog::getOpenFileName(this,tr("open video file"),"",
         tr("video file(*.mkv,*.mp4,*.m2ts,*.ts,*.mov,*.m4v,*.avi,*.3GP,*.flv,*.ogv,*.vob)(*.mkv *.mp4 *.m2ts *.ts *.mov *.m4v *.avi *.3GP *.flv *.ogv *.vob);;all file(*)"));
     if (filename.isEmpty()) return;
@@ -41,47 +43,50 @@ void MainWindow::on_actionopen_triggered()
             setup_polt(cachefile.string(),true,fileinfo.fileName().toStdString());
         }
         else{
-            setup_polt(filename.toStdString(),fileinfo.fileName().toStdString(),cachefile.string());
+            synchronizer.addFuture(QtConcurrent::run([=](){setup_polt(filename.toStdString(),fileinfo.fileName().toStdString(),cachefile.string());}));
         }
     }
-    CurrentVideo=filename;
-    loaded=true;
     return;
 }
 
-
 void MainWindow::setup_polt(std::string path,bool useCache,std::string filename){
     std::vector<FrameInfo> FrameInfoArray;
+    loadStatus=-1;
     if (useCache){
         FrameInfoArray = Backend::loadcsv(path);
     }
     else {
         FrameInfoArray = Backend::loadvideo(path);
     }
+
     CurrentResult = Backend::calc(FrameInfoArray);
     std::string html=Plot.applydata(CurrentResult,filename,false);
-    //ui->webEngineView->setHtml(QString::fromStdString(html));
     plot::savehtml(CurrentHtml,html);
-    ui->webEngineView->load(QUrl::fromLocalFile(QString::fromLocal8Bit(CurrentHtml.data())));
+    emit loadhtml(QUrl::fromLocalFile(QString::fromLocal8Bit(CurrentHtml.data())));
+    CurrentVideo=QString::fromStdString(filename);
+    loadStatus=1;
     return;
 }
 
+
 void MainWindow::setup_polt(std::string path,std::string filename,std::string savecache){
     std::vector<FrameInfo> FrameInfoArray;
+    loadStatus=-1;
     FrameInfoArray = Backend::loadvideo(path);
     Backend::savecsv(FrameInfoArray,savecache);
     CurrentResult = Backend::calc(FrameInfoArray);
     std::string html=Plot.applydata(CurrentResult,filename,false);
-    //ui->webEngineView->setHtml(QString::fromStdString(html));
     plot::savehtml(CurrentHtml,html);
-    ui->webEngineView->load(QUrl::fromLocalFile(QString::fromLocal8Bit(CurrentHtml.data())));
+    emit loadhtml(QUrl::fromLocalFile(QString::fromLocal8Bit(CurrentHtml.data())));
+    CurrentVideo=QString::fromStdString(filename);
+    loadStatus=1;
     return;
 }
 
 
 void MainWindow::on_actionsave_triggered()
 {
-    if (!loaded) return;
+    if (loadStatus <= 0) return;
     QFileInfo fileinfo = QFileInfo(CurrentVideo);
     QString filename = QFileDialog::getSaveFileName(
         this,
@@ -94,6 +99,10 @@ void MainWindow::on_actionsave_triggered()
     std::string html=Plot.applydata(CurrentResult,fileinfo.fileName().toStdString(),true);
     plot::savehtml(filename.toLocal8Bit().toStdString(),html);
     return;
+}
+
+void MainWindow::LoadHTML(QUrl url){
+    ui->webEngineView->load(url);
 }
 
 inline std::string MainWindow::checksum(QString path,int maxCalcSize){
