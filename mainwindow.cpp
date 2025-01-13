@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include "backend.h"
 #include "sha1.hpp"
-#include <QTimer>
+#include <QFile>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->webEngineView->setContextMenuPolicy(Qt::NoContextMenu);
+    ini= new INI(QApplication::applicationDirPath()+"/"+SETTINGFILE);
     workpath=QApplication::applicationDirPath().toLocal8Bit().toStdString();
     if (!fs::exists(workpath / ".cache")) fs::create_directory(workpath / ".cache");
     std::string html =plot::loadhtml(workpath.string()+"/resource/template.html");

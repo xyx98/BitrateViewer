@@ -5,8 +5,11 @@
 #include <QJsonObject>
 #include <QFileDialog>
 #include <QtConcurrent/QtConcurrent>
-#include "plot.h"
 #include <filesystem>
+#include "plot.h"
+#include "ini.h"
+#include "config.h"
+
 namespace fs = std::filesystem;
 
 
@@ -26,6 +29,7 @@ public:
     QAction *actionopen;
 
     plot Plot;
+    INI *ini;
     QString CurrentVideo;
     int loadStatus;
     CalcResult CurrentResult;

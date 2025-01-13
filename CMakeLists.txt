@@ -13,6 +13,8 @@ qt_add_executable(BitrateViewer
     sha1.hpp
     plot.h
     plot.cpp
+    ini.h
+    ini.cpp
     main.cpp
     mainwindow.cpp
     mainwindow.h
