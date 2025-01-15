@@ -47,7 +47,7 @@ option = {
       show:true,
       snap: true,
       formatter: function (params){
-        return `frame: ${params.value}|${pts2time(data.pts[params.value])}|${data.pict_type[params.value]}\ngop:  ${gopInfo[params.value][0]}-${gopInfo[params.value][1]}\n         ${gopInfo[params.value][2].toFixed(3)} kbps`
+        return `frame: ${params.value}|${pts2time(data.pts[params.value])}|${data.pict_type[params.value]}\ngop:  ${gopInfo[params.value][0]}-${gopInfo[params.value][1]}|${gopInfo[params.value][2].toFixed(3)} kbps`
         }
       }
     },
@@ -161,7 +161,7 @@ function gopCalc(data){
   var gopInfo=[];
 
   var start=0;
-  var end=0;
+  var end=-1;
   var avg=0;
   var sum=0;
   var dur=0;
