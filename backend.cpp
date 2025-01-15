@@ -115,16 +115,6 @@ std::vector<FrameInfo> Backend::loadcsv(std::string path){
         ss << lineArray[5]; ss >> tmpFrameInfo.duration;    ss.clear();
 
         FrameInfoArray.push_back(tmpFrameInfo);
-        /*
-        std::cout   << FrameInfoArray[count].pict_type << std::endl
-            << FrameInfoArray[count].pkt_size << std::endl
-            << FrameInfoArray[count].pts << std::endl
-            << FrameInfoArray[count].keyframe << std::endl
-            << FrameInfoArray[count].duration << std::endl
-            << "-----------------------------" << std::endl;
-        count++;
-        if (count>10) break;
-        */
     }
 
     file.close();
@@ -152,11 +142,9 @@ CalcResult Backend::calc(std::vector<FrameInfo> FrameInfoArray){
         else result.bitrates[i]=8.0 * FrameInfoArray[i].pkt_size/FrameInfoArray[i].duration;
         result.pts[i]=FrameInfoArray[i].pts;
         totalsize += FrameInfoArray[i].pkt_size * 8;
-    //    std::cout << frames[i] << "\t" << bitrates[i] <<std::endl;
     }
 
     float avg =1.0 * totalsize / (FrameInfoArray[length-1].pts-FrameInfoArray[0].pts);
-    //result = {frames,bitrates,length,avg};
     result.avg=avg;
     return result;
 };
@@ -179,19 +167,21 @@ void Backend::SplitString(const std::string& s, std::vector<std::string>& v, con
 void Backend::savecsv(std::vector<FrameInfo> FrameInfoArray,std::string path){
     std::ofstream file;
     file.open(path);
-    for (int i=0;i<FrameInfoArray.size();i++){
-        if (file.is_open()){
+    if (file.is_open()){
+        file << "n\tpict_type\tpkt_size\tpts\tkeyframe\tduration" <<std::endl;
+        for (int i=0;i<FrameInfoArray.size();i++){
             file    << i << "\t"
-                 << FrameInfoArray[i].pict_type << "\t"
-                 << FrameInfoArray[i].pkt_size << "\t"
-                 << FrameInfoArray[i].pts << "\t"
-                 << FrameInfoArray[i].keyframe << "\t"
-                 << FrameInfoArray[i].duration << std::endl;
-        }
-        else{
-            std::cout << "Failed to open the file:" << path << std::endl;
+                    << FrameInfoArray[i].pict_type << "\t"
+                    << FrameInfoArray[i].pkt_size << "\t"
+                    << FrameInfoArray[i].pts << "\t"
+                    << FrameInfoArray[i].keyframe << "\t"
+                    << FrameInfoArray[i].duration << std::endl;
         }
     }
+    else{
+        std::cout << "Failed to open the file:" << path << std::endl;
+    }
+    
     file.close();
 }
 
