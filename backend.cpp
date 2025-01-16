@@ -95,7 +95,6 @@ std::vector<FrameInfo> Backend::loadvideo(std::string path){
     return FrameInfoArray;
 }
 
-
 std::vector<FrameInfo> Backend::loadcsv(std::string path){
     std::vector<FrameInfo> FrameInfoArray;
     std::ifstream file(path);
@@ -202,6 +201,24 @@ std::string Backend::ArrayToStringChar(char array[],int length){
         if (i==length-1)    ss << "'" << array[i] << "']";
         else                ss << "'" << array[i] << "',";
     }
+    return ss.str();
+}
+
+FFmpegVersion Backend::getFFmpegVersion(){
+    FFmpegVersion ffver;
+    ffver.license=avcodec_license();
+    ffver.libavcodec=Backend::FFverInt2String(avcodec_version());
+    ffver.libavutil=Backend::FFverInt2String(avutil_version());
+    ffver.libavformat=Backend::FFverInt2String(avformat_version());
+    return ffver;
+}
+
+inline std::string Backend::FFverInt2String(int version){
+    int a = version / (int) pow(2, 16);
+	int b = (int) (version - a * pow(2, 16)) / (int) pow(2, 8);
+	int c = version % (int) pow(2, 8);
+    std::stringstream ss;
+    ss << a << "." << b << "." << c;
     return ss.str();
 }
 

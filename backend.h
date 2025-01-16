@@ -31,6 +31,13 @@ typedef struct CalcResult{
     float avg;
 } CalcResult;
 
+typedef struct FFmpegVersion{
+    std::string license;
+    std::string libavutil;
+    std::string libavcodec;
+    std::string libavformat;
+} FFmpegVersion;
+
 
 class Backend{
     public:
@@ -41,6 +48,8 @@ class Backend{
     static void SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c);
     template<typename T> static std::string ArrayToStringNumber(T array[],int length);
     static std::string ArrayToStringChar(char array[],int length);
+    static FFmpegVersion getFFmpegVersion();
+    static std::string FFverInt2String(int version);
 };
 
 #endif
