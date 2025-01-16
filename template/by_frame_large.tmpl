@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+  <div id="container" style="height: 100%"></div>
+  
+  <script type="text/javascript" src="{{{echarts}}}"></script>
+
+  <script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+    
+    var option;
+
+const data = generateData();
+const gopInfo = gopCalc(data);
+option = {
+  title: {
+    text: data.name,
+    left: 10
+  },
+  color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
+  toolbox: {
+    feature: {
+      restore: {
+        show: true
+      },
+      saveAsImage: {
+        pixelRatio: 2,
+        show: {{{isSave}}}
+      }
+    }
+  },
+  tooltip: {
+    trigger: 'axis',
+    confine:true,
+    extraCssText: 'max-width:400px; white-space: pre-wrap;word-break: break-all;word-wrap: break-word;',
+    axisPointer: {
+      type: 'line',
+      label:{
+      show:true,
+      snap: true,
+      formatter: function (params){
+        return `frame: ${params.value}|${pts2time(data.pts[params.value])}|${data.pict_type[params.value]}\ngop:  ${gopInfo[params.value][0]}-${gopInfo[params.value][1]}|${gopInfo[params.value][2].toFixed(3)} kbps`
+        }
+      }
+    },
+    valueFormatter: (value,index) => `${value} kbps`
+  },
+  grid: {
+    bottom: 90
+  },
+  dataZoom: [
+    {
+      type: 'inside',
+      filterMode : 'filterd'
+    },
+    {
+      type: 'slider'
+    }
+  ],
+  xAxis: {
+    data: data.x,
+    silent: false,
+    splitLine: {
+      show: false
+    },
+    splitArea: {
+      show: false
+    },
+    axisLabel: {
+      formatter: function(value,index){
+        return `${pts2time(data.pts[value])}`
+      }
+    }
+  },
+  yAxis: {
+    splitArea: {
+      show: false
+    },
+    axisLabel: {
+      formatter: '{value} kbps'
+    }
+  },
+  series: [
+    {
+      type: 'bar',
+      data: data.y,
+      //sampling:'lttb', //if enable sampling,markline avg has wrong value
+      large: true,
+      symbol:['none','none'],
+      barCategoryGap:"0%",
+      markLine: {
+        symbol: ['none','none'],
+        data: [
+          { 
+            //yAxis: data.avg, //use static markline
+            precision: 3,
+            silent: true,
+            type: 'average',
+            name: 'avg' ,
+            label:{
+              formatter:"avg {c}kbps"
+            }
+          }
+        ]
+      },
+      itemStyle: {
+        color:function(params){
+          ft=data.pict_type[params.dataIndex];
+          if (ft=="B") return option.color[0];
+          else if (ft=="P") return option.color[1];
+          else if (ft=="I") return option.color[3];
+          else return option.color[6];
+        },
+      }
+    }
+  ]
+};
+function generateData() {
+  {{{datas}}}
+
+  return {
+    x: x,
+    y: y,
+    pts: pts,
+    pkt_size: pkt_size,
+    pict_type: pict_type,
+    key : key,
+    avg: avg,
+    length: length,
+    name: name
+  };
+}
+
+function pts2time(pts){
+  h=0;
+  m=0;
+  s=Math.floor(pts/1000);
+  ms=pts%1000;
+  if (s>=60){
+    m=Math.floor(s/60);
+    s=s%60;
+    if (m>=60){
+      h=Math.floor(m/60);
+      m=m%60;
+    };
+  };
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(ms).padEnd(3, '0')}`;
+}
+
+function gopCalc(data){
+  var length=data.length;
+  console.log(length);
+  var gopInfo=[];
+
+  var start=0;
+  var end=-1;
+  var avg=0;
+  var sum=0;
+  var dur=0;
+  for (let i=0; i<length; i++){
+    if (data.key[i]==1){
+            start=i;
+            sum=data.pkt_size[i]
+        }
+    else{
+        sum+=data.pkt_size[i]
+    }
+
+    if (i==length-1) {
+        end=i;
+    }
+    else{
+        if(data.key[i+1]==1){
+            end=i;
+        }
+    }
+    
+    if (end==i){
+        if (end==length-1){
+            dur=data.pts[end]-data.pts[start]+data.pts[end]-data.pts[end-1];
+        }
+        else{
+            dur=data.pts[end+1]-data.pts[start];
+        }
+        var info=[start,end,8*sum/dur];
+        for(let j=0;j<end-start+1;j++){
+            gopInfo.push(info);
+        }
+    }
+  }
+  return gopInfo
+}
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+  </script>
+</body>
+</html>

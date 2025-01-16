@@ -15,8 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     ini= new INI(QApplication::applicationDirPath()+"/"+SETTINGFILE);
     workpath=QApplication::applicationDirPath().toLocal8Bit().toStdString();
     if (!fs::exists(workpath / ".cache")) fs::create_directory(workpath / ".cache");
-    tmpl="template.tmpl";
-    std::string html =plot::loadhtml(workpath.string()+"/template/"+tmpl);
+    std::string html =plot::loadhtml(workpath.string()+"/template/"+ini->getTmpl().toStdString());
     Plot.setBaseHtml(html);
     CurrentHtml = (workpath / ".cache" / "Curr.html").string();
     CurrentVideo = "";
@@ -125,7 +124,7 @@ void MainWindow::on_actionAbout_triggered()
     QString aboutString = "<h2>BitrateViewer v" BITRATEVIEWER_VERSION "</h2>\n<p>by xyx98<br/>https://github.com/xyx98/BitrateViewer";
     aboutString.append("<br/>This software is free and distributed under GPL-3.0 license</p>");
 
-    aboutString.append("<p><pre>Software uses FFmpeg project.<br/>https://ffmpeg.org/<br/>Current using build is distributed under "+ffver.license);
+    aboutString.append("<p><pre>Software uses FFmpeg project.<br/>https://ffmpeg.org/<br/>Current using build distributed under "+ffver.license);
     aboutString.append("<br/>libavutil\t\t"+ffver.libavutil);
     aboutString.append("<br/>libavcodec\t\t"+ffver.libavcodec);
     aboutString.append("<br/>libavformat\t"+ffver.libavformat+"</pre></p>");
@@ -136,4 +135,3 @@ void MainWindow::on_actionAbout_triggered()
     aboutString.append("<p>Software uses Apache ECharts by Apache Software Foundation, distributed under Apache License 2.0.<br/>https://echarts.apache.org/<p>");
     QMessageBox::about(this,"About BitrateViewer",aboutString);
 }
-

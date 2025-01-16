@@ -13,4 +13,6 @@
 #define DEFAULTDECODERVP9  "libvpx-vp9"
 #define DEFAULTDECODERAV1  "libdav1d"
 
+#define DEFAULTTEMPLATE "by_frame_normal.tmpl"
+
 #endif

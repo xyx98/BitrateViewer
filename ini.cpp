@@ -10,6 +10,21 @@ INI::INI(QString path){
 }
 
 void INI::createINI(){
+    config->beginGroup("config");
+    config->setValue("template",DEFAULTTEMPLATE);
+    config->endGroup();
+}
+
+QString INI::getTmpl(){
+    return config->value("config/template").toString();
+}
+
+void INI::setTmpl(QString str){
+    config->setValue("config/template",str);
+    config->sync();
+}
+/* unused
+void INI::createINI(){
     config->beginGroup("Decoder");
     config->setValue("H264",DEFAULTDECODERH264);
     config->setValue("H265",DEFAULTDECODERH265);
@@ -38,3 +53,4 @@ std::string INI::getDecoder(QString key,bool Default){
         else                  return "";
     }
 }
+*/
