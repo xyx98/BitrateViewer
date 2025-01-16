@@ -36,6 +36,7 @@ public:
     CalcResult CurrentResult;
     fs::path workpath;
     std::string CurrentHtml;
+    std::string tmpl;
 
     void setup_polt(std::string path,bool useCache,std::string filename);
     void setup_polt(std::string path,std::string filename,std::string savecache);

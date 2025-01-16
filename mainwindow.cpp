@@ -15,7 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
     ini= new INI(QApplication::applicationDirPath()+"/"+SETTINGFILE);
     workpath=QApplication::applicationDirPath().toLocal8Bit().toStdString();
     if (!fs::exists(workpath / ".cache")) fs::create_directory(workpath / ".cache");
-    std::string html =plot::loadhtml(workpath.string()+"/resource/template.html");
+    tmpl="template.tmpl";
+    std::string html =plot::loadhtml(workpath.string()+"/template/"+tmpl);
     Plot.setBaseHtml(html);
     CurrentHtml = (workpath / ".cache" / "Curr.html").string();
     CurrentVideo = "";
