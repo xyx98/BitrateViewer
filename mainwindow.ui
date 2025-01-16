@@ -33,8 +33,8 @@
        <number>1</number>
       </property>
       <item row="0" column="0">
-       <widget class="QWebEngineView" name="webEngineView" native="true">
-        <property name="url" stdset="0">
+       <widget class="QWebEngineView" name="webEngineView">
+        <property name="url">
          <url>
           <string>about:blank</string>
          </url>
@@ -91,6 +91,10 @@
    <addaction name="actionopen"/>
    <addaction name="separator"/>
    <addaction name="actionsave"/>
+   <addaction name="separator"/>
+   <addaction name="actiontemplate"/>
+   <addaction name="separator"/>
+   <addaction name="actionAbout"/>
   </widget>
   <action name="actionopen">
    <property name="icon">
@@ -115,6 +119,50 @@
    </property>
    <property name="toolTip">
     <string>save plot to ...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset theme="QIcon::ThemeIcon::HelpAbout"/>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::AboutRole</enum>
+   </property>
+  </action>
+  <action name="actiontemplate">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="QIcon::ThemeIcon::FormatJustifyFill"/>
+   </property>
+   <property name="text">
+    <string>template</string>
+   </property>
+   <property name="toolTip">
+    <string>choose template</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <italic>false</italic>
+     <bold>false</bold>
+     <stylestrategy>PreferDefault</stylestrategy>
+     <kerning>true</kerning>
+     <hintingpreference>PreferDefaultHinting</hintingpreference>
+    </font>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::ShortcutContext::WindowShortcut</enum>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

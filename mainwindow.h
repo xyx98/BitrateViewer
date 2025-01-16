@@ -4,11 +4,12 @@
 #include <QMainWindow>
 #include <QJsonObject>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QtConcurrent/QtConcurrent>
 #include <filesystem>
+#include <QFile>
 #include "plot.h"
 #include "ini.h"
-#include "config.h"
 
 namespace fs = std::filesystem;
 
@@ -51,6 +52,8 @@ private slots:
     void on_actionopen_triggered();
 
     void on_actionsave_triggered();
+
+    void on_actionAbout_triggered();
 
 private:
     Ui::MainWindow *ui;

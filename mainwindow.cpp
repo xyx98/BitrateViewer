@@ -2,7 +2,9 @@
 #include "ui_mainwindow.h"
 #include "backend.h"
 #include "sha1.hpp"
-#include <QFile>
+#include "config.h"
+
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -115,3 +117,18 @@ inline std::string MainWindow::checksum(QString path,int maxCalcSize){
     checksum+=sha1.final();
     return checksum;
 }
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QString aboutString = "<h2>BitrateViewer v" BITRATEVIEWER_VERSION "</h2>\n<p>by xyx98<br/>https://github.com/xyx98/BitrateViewer";
+    aboutString.append("<br/>This software is free and distributed under GPL-3.0 license</p>");
+
+    aboutString.append("<p>Software uses FFmpeg project, distributed under GPL-3.0 license.<br/>https://ffmpeg.org/</p>");
+
+    aboutString.append("<p>Software uses Qt framework by The Qt Company, distributed under LGPL license.<br/>https://qt.io/");
+    aboutString.append(QString("<br/>Built with Qt %1</p>").arg(QT_VERSION_STR));
+
+    aboutString.append("<p>Software uses Apache ECharts by Apache Software Foundation, distributed under Apache License 2.0.<br/>https://echarts.apache.org/<p>");
+    QMessageBox::about(this,"About BitrateViewer",aboutString);
+}
+
