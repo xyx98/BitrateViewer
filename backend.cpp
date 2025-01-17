@@ -140,7 +140,7 @@ CalcResult Backend::calc(std::vector<FrameInfo> FrameInfoArray){
     result.codec=FrameInfoArray[0].codec;
     result.fpsNum=FrameInfoArray[0].fpsNum;
     result.fpsDen=FrameInfoArray[0].fpsDen;
-    int totalsize =0 ;
+    u_int64_t totalsize =0 ;
 
     for(int i=0;i<length;i++){
         result.frames[i]=i;
