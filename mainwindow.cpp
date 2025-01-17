@@ -135,3 +135,8 @@ void MainWindow::on_actionAbout_triggered()
     aboutString.append("<p>Software uses Apache ECharts by Apache Software Foundation, distributed under Apache License 2.0.<br/>https://echarts.apache.org/<p>");
     QMessageBox::about(this,"About BitrateViewer",aboutString);
 }
+
+void MainWindow::on_actiontemplate_triggered()
+{
+    QMessageBox::information(this,"choose template","Not implemented yet.\nSet it in setting.ini instead.");
+}

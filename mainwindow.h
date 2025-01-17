@@ -55,6 +55,8 @@ private slots:
 
     void on_actionAbout_triggered();
 
+    void on_actiontemplate_triggered();
+
 private:
     Ui::MainWindow *ui;
     QFutureSynchronizer<void> synchronizer;

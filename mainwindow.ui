@@ -146,20 +146,13 @@
     <iconset theme="QIcon::ThemeIcon::FormatJustifyFill"/>
    </property>
    <property name="text">
-    <string>template</string>
+    <string>tmpl</string>
    </property>
    <property name="toolTip">
     <string>choose template</string>
    </property>
    <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <italic>false</italic>
-     <bold>false</bold>
-     <stylestrategy>PreferDefault</stylestrategy>
-     <kerning>true</kerning>
-     <hintingpreference>PreferDefaultHinting</hintingpreference>
-    </font>
+    <font/>
    </property>
    <property name="shortcutContext">
     <enum>Qt::ShortcutContext::WindowShortcut</enum>
