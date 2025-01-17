@@ -22,7 +22,7 @@ const data = generateData();
 const gopInfo = gopCalc(data);
 option = {
   title: {
-    text: data.name,
+    text: `${data.name} - ${data.codec}`,
     left: 10
   },
   color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
@@ -51,7 +51,7 @@ option = {
         }
       }
     },
-    valueFormatter: (value,index) => `${value} kbps`
+    valueFormatter: (value,index) => `${value.toFixed(2)} kbps`
   },
   grid: {
     bottom: 90
@@ -91,7 +91,7 @@ option = {
   series: [
     {
       type: 'bar',
-      data: data.y,
+      data: calcBitrateCfr(data.pkt_size,data.fpsNum,data.fpsDen),
       //sampling:'lttb', //if enable sampling,markline avg has wrong value
       large: true,
       symbol:['none','none'],
@@ -135,7 +135,10 @@ function generateData() {
     key : key,
     avg: avg,
     length: length,
-    name: name
+    name: name,
+    codec: codec,
+    fpsNum: fpsNum,
+    fpsDen: fpsDen
   };
 }
 
@@ -153,6 +156,10 @@ function pts2time(pts){
     };
   };
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(ms).padEnd(3, '0')}`;
+}
+
+function calcBitrateCfr(pkt_size,fpsNum,fpsDen){
+  return pkt_size.map((x) => 8.0*x/(1000/fpsNum*fpsDen));
 }
 
 function gopCalc(data){
@@ -184,12 +191,7 @@ function gopCalc(data){
     }
     
     if (end==i){
-        if (end==length-1){
-            dur=data.pts[end]-data.pts[start]+data.pts[end]-data.pts[end-1];
-        }
-        else{
-            dur=data.pts[end+1]-data.pts[start];
-        }
+        dur=(end-start+1)*(1000/data.fpsNum*data.fpsDen);
         var info=[start,end,8*sum/dur];
         for(let j=0;j<end-start+1;j++){
             gopInfo.push(info);

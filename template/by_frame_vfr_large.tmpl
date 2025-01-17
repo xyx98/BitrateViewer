@@ -91,19 +91,19 @@ option = {
   series: [
     {
       type: 'bar',
-      data: calcBitrateCfr(data.pkt_size,data.fpsNum,data.fpsDen),
+      data: data.y,
       //sampling:'lttb', //if enable sampling,markline avg has wrong value
-      large: false,
+      large: true,
       symbol:['none','none'],
       barCategoryGap:"0%",
       markLine: {
         symbol: ['none','none'],
         data: [
           { 
-            //yAxis: data.avg, //use static markline
+            yAxis: data.avg, //use static markline
             precision: 3,
             silent: true,
-            type: 'average',
+            //type: 'average',
             name: 'avg' ,
             label:{
               formatter:"avg {c}kbps"
@@ -158,9 +158,6 @@ function pts2time(pts){
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(ms).padEnd(3, '0')}`;
 }
 
-function calcBitrateCfr(pkt_size,fpsNum,fpsDen){
-  return pkt_size.map((x) => 8.0*x/(1000/fpsNum*fpsDen));
-}
 
 function gopCalc(data){
   var length=data.length;
@@ -191,7 +188,12 @@ function gopCalc(data){
     }
     
     if (end==i){
-        dur=(end-start+1)*(1000/data.fpsNum*data.fpsDen);
+        if (end==length-1){
+            dur=data.pts[end]-data.pts[start]+data.pts[end]-data.pts[end-1];
+        }
+        else{
+            dur=data.pts[end+1]-data.pts[start];
+        }
         var info=[start,end,8*sum/dur];
         for(let j=0;j<end-start+1;j++){
             gopInfo.push(info);
