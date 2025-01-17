@@ -36,6 +36,10 @@ std::string plot::applydata(CalcResult result,std::string filename,bool isSave){
     ss <<"  avg = "         << result.avg                                                   << ";"      << std::endl;
     ss <<"  length = "      << result.length                                                << ";"      << std::endl;
     ss <<"  name = \""      << filename                                                     << "\";"    << std::endl;
+    ss <<"  codec = \""     << result.codec                                                 << "\";"    << std::endl;
+    ss <<"  fpsNum = "      << result.fpsNum                                                << ";"      << std::endl;
+    ss <<"  fpsDen = "      << result.fpsDen                                                << ";"      << std::endl;
+
     std::string res=plot::templateReplace(basehtml,ss.str(),"datas");
     if (isSave){
         res=plot::templateReplace(res,"true","isSave");

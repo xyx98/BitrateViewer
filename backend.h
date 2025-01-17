@@ -18,6 +18,9 @@ typedef struct FrameInfo{
     int64_t     pts;
     int         keyframe; 
     int64_t     duration;
+    std::string codec;
+    int         fpsNum;
+    int         fpsDen;
 } FrameInfo;
 
 typedef struct CalcResult{
@@ -29,6 +32,9 @@ typedef struct CalcResult{
     int* pkt_size;
     int length;
     float avg;
+    std::string codec;
+    int fpsNum;
+    int fpsDen;
 } CalcResult;
 
 typedef struct FFmpegVersion{

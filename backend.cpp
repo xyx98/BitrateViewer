@@ -34,19 +34,21 @@ std::vector<FrameInfo> Backend::loadvideo(std::string path){
         return FrameInfoArray;
     }    
 
+    int fpsNum=format_ctx->streams[video_stream_idx]->avg_frame_rate.num;
+    int fpsDen=format_ctx->streams[video_stream_idx]->avg_frame_rate.den;
     // Get codec parameters and codec context
     AVCodecParameters* codecpar = format_ctx->streams[video_stream_idx]->codecpar;
     const AVCodec* codec = avcodec_find_decoder(codecpar->codec_id);
+    std::string codec_name = avcodec_get_name(codecpar->codec_id);
     AVCodecContext* codec_ctx = avcodec_alloc_context3(codec);
     codec_ctx->thread_count = av_cpu_count(); //set decode threads
     avcodec_parameters_to_context(codec_ctx, codecpar);
-
     if (avcodec_open2(codec_ctx, codec, nullptr) < 0) {
         std::cerr << "Could not open codec" << std::endl;
         return FrameInfoArray;
     }
 
-        // Allocate frame and packet
+    // Allocate frame and packet
     AVFrame* frame = av_frame_alloc();
     AVPacket packet;
     av_init_packet(&packet);
@@ -74,7 +76,10 @@ std::vector<FrameInfo> Backend::loadvideo(std::string path){
                 frame->pkt_size,
                 frame->pts,
                 frame->key_frame,
-                frame->duration
+                frame->duration,
+                codec_name,
+                fpsNum,
+                fpsDen
                 };
             FrameInfoArray.push_back(tmpFrameInfo);
             }
@@ -112,7 +117,9 @@ std::vector<FrameInfo> Backend::loadcsv(std::string path){
         ss << lineArray[3]; ss >> tmpFrameInfo.pts;         ss.clear();
         ss << lineArray[4]; ss >> tmpFrameInfo.keyframe;    ss.clear();
         ss << lineArray[5]; ss >> tmpFrameInfo.duration;    ss.clear();
-
+        ss << lineArray[6]; ss >> tmpFrameInfo.codec;       ss.clear();
+        ss << lineArray[7]; ss >> tmpFrameInfo.fpsNum;      ss.clear();
+        ss << lineArray[8]; ss >> tmpFrameInfo.fpsDen;      ss.clear();
         FrameInfoArray.push_back(tmpFrameInfo);
     }
 
@@ -130,6 +137,9 @@ CalcResult Backend::calc(std::vector<FrameInfo> FrameInfoArray){
     result.key = (int*)calloc(length,sizeof(int));
     result.pkt_size = (int*)calloc(length,sizeof(int));
     result.length=length;
+    result.codec=FrameInfoArray[0].codec;
+    result.fpsNum=FrameInfoArray[0].fpsNum;
+    result.fpsDen=FrameInfoArray[0].fpsDen;
     int totalsize =0 ;
 
     for(int i=0;i<length;i++){
@@ -167,14 +177,17 @@ void Backend::savecsv(std::vector<FrameInfo> FrameInfoArray,std::string path){
     std::ofstream file;
     file.open(path);
     if (file.is_open()){
-        file << "n\tpict_type\tpkt_size\tpts\tkeyframe\tduration" <<std::endl;
+        file << "n\tpict_type\tpkt_size\tpts\tkeyframe\tduration\tcodec\tfpsnum\tfpsden" <<std::endl;
         for (int i=0;i<FrameInfoArray.size();i++){
             file    << i << "\t"
-                    << FrameInfoArray[i].pict_type << "\t"
-                    << FrameInfoArray[i].pkt_size << "\t"
-                    << FrameInfoArray[i].pts << "\t"
-                    << FrameInfoArray[i].keyframe << "\t"
-                    << FrameInfoArray[i].duration << std::endl;
+                    << FrameInfoArray[i].pict_type   << "\t"
+                    << FrameInfoArray[i].pkt_size    << "\t"
+                    << FrameInfoArray[i].pts         << "\t"
+                    << FrameInfoArray[i].keyframe    << "\t"
+                    << FrameInfoArray[i].duration    << "\t"
+                    << FrameInfoArray[i].codec       << "\t"
+                    << FrameInfoArray[i].fpsNum      << "\t"
+                    << FrameInfoArray[i].fpsDen      << std::endl;
         }
     }
     else{
