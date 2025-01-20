@@ -123,20 +123,22 @@ void MainWindow::on_actionAbout_triggered()
     FFmpegVersion ffver=Backend::getFFmpegVersion();
     QString aboutString = "<h2>BitrateViewer v" BITRATEVIEWER_VERSION "</h2>\n<p>by xyx98<br/>https://github.com/xyx98/BitrateViewer";
     aboutString.append("<br/>This software is free and distributed under GPL-3.0 license</p>");
-
+    //ffmpeg
     aboutString.append("<p><pre>Software uses FFmpeg project.<br/>https://ffmpeg.org/<br/>Current using build distributed under "+ffver.license);
     aboutString.append("<br/>libavutil\t\t"+ffver.libavutil);
     aboutString.append("<br/>libavcodec\t\t"+ffver.libavcodec);
     aboutString.append("<br/>libavformat\t"+ffver.libavformat+"</pre></p>");
-
+    //qt
     aboutString.append("<p>Software uses Qt framework by The Qt Company, distributed under LGPL license.<br/>https://qt.io/");
     aboutString.append(QString("<br/>Built with Qt %1</p>").arg(QT_VERSION_STR));
-
+    //echarts
     aboutString.append("<p>Software uses Apache ECharts by Apache Software Foundation, distributed under Apache License 2.0.<br/>https://echarts.apache.org/<p>");
+    //feather icons
+    aboutString.append("<p>Software uses feather icons, distributed under MIT license.<br/>https://feathericons.com/<p>");
     QMessageBox::about(this,"About BitrateViewer",aboutString);
 }
 
-void MainWindow::on_actiontemplate_triggered()
+void MainWindow::on_actionoptions_triggered()
 {
-    QMessageBox::information(this,"choose template","Not implemented yet.\nSet it in setting.ini instead.");
+    QMessageBox::information(this,"options","Not implemented yet.\nSet it in setting.ini instead.");
 }

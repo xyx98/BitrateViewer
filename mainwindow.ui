@@ -76,11 +76,17 @@
    <property name="orientation">
     <enum>Qt::Orientation::Horizontal</enum>
    </property>
+   <property name="iconSize">
+    <size>
+     <width>24</width>
+     <height>24</height>
+    </size>
+   </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonStyle::ToolButtonTextUnderIcon</enum>
    </property>
    <property name="floatable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -92,13 +98,14 @@
    <addaction name="separator"/>
    <addaction name="actionsave"/>
    <addaction name="separator"/>
-   <addaction name="actiontemplate"/>
+   <addaction name="actionoptions"/>
    <addaction name="separator"/>
    <addaction name="actionAbout"/>
   </widget>
   <action name="actionopen">
    <property name="icon">
-    <iconset theme="QIcon::ThemeIcon::DocumentOpen"/>
+    <iconset>
+     <normaloff>:/img/icons/folder.svg</normaloff>:/img/icons/folder.svg</iconset>
    </property>
    <property name="text">
     <string>open</string>
@@ -112,7 +119,8 @@
   </action>
   <action name="actionsave">
    <property name="icon">
-    <iconset theme="QIcon::ThemeIcon::DocumentSaveAs"/>
+    <iconset>
+     <normaloff>:/img/icons/save.svg</normaloff>:/img/icons/save.svg</iconset>
    </property>
    <property name="text">
     <string>save</string>
@@ -126,7 +134,8 @@
   </action>
   <action name="actionAbout">
    <property name="icon">
-    <iconset theme="QIcon::ThemeIcon::HelpAbout"/>
+    <iconset>
+     <normaloff>:/img/icons/alert-circle.svg</normaloff>:/img/icons/alert-circle.svg</iconset>
    </property>
    <property name="text">
     <string>About</string>
@@ -135,7 +144,7 @@
     <enum>QAction::MenuRole::AboutRole</enum>
    </property>
   </action>
-  <action name="actiontemplate">
+  <action name="actionoptions">
    <property name="checkable">
     <bool>false</bool>
    </property>
@@ -143,10 +152,11 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="QIcon::ThemeIcon::FormatJustifyFill"/>
+    <iconset>
+     <normaloff>:/img/icons/settings.svg</normaloff>:/img/icons/settings.svg</iconset>
    </property>
    <property name="text">
-    <string>tmpl</string>
+    <string>options</string>
    </property>
    <property name="toolTip">
     <string>choose template</string>

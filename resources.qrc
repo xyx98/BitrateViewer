@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>icons/alert-circle.svg</file>
+        <file>icons/folder.svg</file>
+        <file>icons/save.svg</file>
+        <file>icons/settings.svg</file>
+    </qresource>
+</RCC>

@@ -55,7 +55,8 @@ private slots:
 
     void on_actionAbout_triggered();
 
-    void on_actiontemplate_triggered();
+
+    void on_actionoptions_triggered();
 
 private:
     Ui::MainWindow *ui;

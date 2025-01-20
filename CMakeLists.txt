@@ -5,6 +5,10 @@ project(BitrateViewer LANGUAGES CXX)
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets WebEngineWidgets Concurrent)
 qt_standard_project_setup()
 
+qt_add_resources(RESOURCE_FILES
+    resources.qrc
+
+)
 qt_add_executable(BitrateViewer
     WIN32 MACOSX_BUNDLE
     config.h
@@ -19,7 +23,10 @@ qt_add_executable(BitrateViewer
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
+    ${RESOURCE_FILES}
 )
+
+
 
 IF (WIN32)
     set(ffmpeg_dir ${PROJECT_SOURCE_DIR}/ffmpeg)
