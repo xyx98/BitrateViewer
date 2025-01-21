@@ -45,17 +45,16 @@ typedef struct FFmpegVersion{
 } FFmpegVersion;
 
 
-class Backend{
-    public:
-    static std::vector<FrameInfo> loadvideo(std::string path);
-    static std::vector<FrameInfo> loadcsv(std::string path);
-    static void savecsv(std::vector<FrameInfo> FrameInfoArray,std::string path);
-    static CalcResult calc(std::vector<FrameInfo> FrameInfoArray);
-    static void SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c);
-    template<typename T> static std::string ArrayToStringNumber(T array[],int length);
-    static std::string ArrayToStringChar(char array[],int length);
-    static FFmpegVersion getFFmpegVersion();
-    static std::string FFverInt2String(int version);
+namespace Backend{
+    std::vector<FrameInfo> loadvideo(std::string path);
+    std::vector<FrameInfo> loadcsv(std::string path);
+    void savecsv(std::vector<FrameInfo> FrameInfoArray,std::string path);
+    CalcResult calc(std::vector<FrameInfo> FrameInfoArray);
+    void SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c);
+    template<typename T> std::string ArrayToStringNumber(T array[],int length);
+    std::string ArrayToStringChar(char array[],int length);
+    FFmpegVersion getFFmpegVersion();
+    std::string FFverInt2String(int version);
 };
 
 #endif
