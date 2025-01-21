@@ -1,14 +1,23 @@
 cmake_minimum_required(VERSION 3.19)
 project(BitrateViewer LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets WebEngineWidgets Concurrent)
 qt_standard_project_setup()
+
+option(FORCE_ENG "If off,some text will follow system language." ON)
+
+if (FORCE_ENG)
+    add_compile_definitions(FORCE_ENG_VIR)
+endif()
 
 qt_add_resources(RESOURCE_FILES
     resources.qrc
 
 )
+
 qt_add_executable(BitrateViewer
     WIN32 MACOSX_BUNDLE
     config.h
@@ -24,6 +33,9 @@ qt_add_executable(BitrateViewer
     mainwindow.h
     mainwindow.ui
     ${RESOURCE_FILES}
+    optsdialog.h
+    optsdialog.cpp
+    optsdialog.ui
 )
 
 

@@ -104,7 +104,7 @@
   </widget>
   <action name="actionopen">
    <property name="icon">
-    <iconset>
+    <iconset resource="resources.qrc">
      <normaloff>:/img/icons/folder.svg</normaloff>:/img/icons/folder.svg</iconset>
    </property>
    <property name="text">
@@ -119,7 +119,7 @@
   </action>
   <action name="actionsave">
    <property name="icon">
-    <iconset>
+    <iconset resource="resources.qrc">
      <normaloff>:/img/icons/save.svg</normaloff>:/img/icons/save.svg</iconset>
    </property>
    <property name="text">
@@ -134,7 +134,7 @@
   </action>
   <action name="actionAbout">
    <property name="icon">
-    <iconset>
+    <iconset resource="resources.qrc">
      <normaloff>:/img/icons/alert-circle.svg</normaloff>:/img/icons/alert-circle.svg</iconset>
    </property>
    <property name="text">
@@ -152,7 +152,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="resources.qrc">
      <normaloff>:/img/icons/settings.svg</normaloff>:/img/icons/settings.svg</iconset>
    </property>
    <property name="text">
@@ -179,6 +179,8 @@
    <header location="global">QtWebEngineWidgets/QWebEngineView</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

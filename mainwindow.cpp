@@ -140,5 +140,16 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_actionoptions_triggered()
 {
-    QMessageBox::information(this,"options","Not implemented yet.\nSet it in setting.ini instead.");
+    //QMessageBox::information(this,"options","Not implemented yet.\nSet it in setting.ini instead.");
+    if(!opts_ui)
+    {
+        opts_ui = new optsDialog(this);
+        opts_ui->setWindowModality(Qt::ApplicationModal);
+        connect(opts_ui, SIGNAL(closed()),this,SLOT(opts_close()));
+        opts_ui->show();
+    }
+}
+
+void MainWindow::opts_close(){
+    opts_ui = nullptr;
 }

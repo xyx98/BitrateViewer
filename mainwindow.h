@@ -10,6 +10,7 @@
 #include <QFile>
 #include "plot.h"
 #include "ini.h"
+#include "optsdialog.h"
 
 namespace fs = std::filesystem;
 
@@ -55,12 +56,13 @@ private slots:
 
     void on_actionAbout_triggered();
 
-
     void on_actionoptions_triggered();
 
+    void opts_close();
 private:
     Ui::MainWindow *ui;
     QFutureSynchronizer<void> synchronizer;
+    optsDialog *opts_ui  = nullptr;
 };
 
 #endif // MAINWINDOW_H
