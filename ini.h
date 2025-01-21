@@ -13,9 +13,6 @@ public:
 
     QString getTmpl();
     void setTmpl(QString str);
-    //void setDecoder(QString key,QString value);
-    //std::string getDecoder(QString key);
-    //std::string getDecoder(QString key,bool Default);
 };
 
 #endif

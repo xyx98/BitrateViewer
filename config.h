@@ -8,11 +8,6 @@
 
 #define SETTINGFILE "settings.ini"
 
-#define DEFAULTDECODERH264 "h264"
-#define DEFAULTDECODERH265 "hevc"
-#define DEFAULTDECODERVP9  "libvpx-vp9"
-#define DEFAULTDECODERAV1  "libdav1d"
-
 #define DEFAULTTEMPLATE "by_frame_normal.tmpl"
 
 #endif
