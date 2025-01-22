@@ -58,7 +58,7 @@ private slots:
 
     void on_actionoptions_triggered();
 
-    void opts_close();
+    void opts_close(bool accepted);
 private:
     Ui::MainWindow *ui;
     QFutureSynchronizer<void> synchronizer;

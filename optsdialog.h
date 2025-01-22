@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+#include "ini.h"
+
 namespace Ui {
 class optsDialog;
 }
@@ -12,11 +14,14 @@ class optsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit optsDialog(QWidget *parent = nullptr);
+    std::vector<std::string> tmpls;
+    INI *ini;
+
+    explicit optsDialog(QWidget *parent = nullptr,INI *ini = nullptr);
     ~optsDialog();
 
 signals:
-    void closed();
+    void closed(bool accepted);
 
 private:
     Ui::optsDialog *ui;

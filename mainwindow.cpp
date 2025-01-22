@@ -140,16 +140,26 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_actionoptions_triggered()
 {
-    //QMessageBox::information(this,"options","Not implemented yet.\nSet it in setting.ini instead.");
+    if (loadStatus <= -1) return;
     if(!opts_ui)
     {
-        opts_ui = new optsDialog(this);
+        opts_ui = new optsDialog(this,ini);
         opts_ui->setWindowModality(Qt::ApplicationModal);
-        connect(opts_ui, SIGNAL(closed()),this,SLOT(opts_close()));
+        connect(opts_ui, SIGNAL(closed(bool)),this,SLOT(opts_close(bool)));
         opts_ui->show();
     }
 }
 
-void MainWindow::opts_close(){
+void MainWindow::opts_close(bool accepted){
+    if (accepted){
+        Plot.setBaseHtml(plot::loadhtml(workpath.string()+"/template/"+ini->getTmpl().toStdString()));
+        if (loadStatus==1){
+            loadStatus=-1;
+            std::string html=Plot.applydata(CurrentResult,CurrentVideo.toStdString(),false);
+            plot::savehtml(CurrentHtml,html);
+            emit loadhtml(QUrl::fromLocalFile(QString::fromLocal8Bit(CurrentHtml.data())));
+            loadStatus=1;
+        }
+    }
     opts_ui = nullptr;
 }

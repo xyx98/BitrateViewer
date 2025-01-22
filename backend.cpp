@@ -237,6 +237,19 @@ namespace Backend{
         return ss.str();
     }
 
+    std::vector<std::string> findTemplate(fs::path path){
+        std::vector<std::string> tmpls;
+        if (!exists(path)) return tmpls;
+        fs::directory_entry entry(path);
+        if (entry.status().type() == fs::file_type::directory){
+            fs::directory_iterator list(path);
+            for (auto& it:list){
+                if (it.path().extension() == ".tmpl") tmpls.push_back(it.path().filename());
+            }
+        }
+        return tmpls;
+    }
+
     template std::string Backend::ArrayToStringNumber<int>(int array[],int length);
     template std::string Backend::ArrayToStringNumber<float>(float array[],int length);
     template std::string Backend::ArrayToStringNumber<int64_t>(int64_t array[],int length);

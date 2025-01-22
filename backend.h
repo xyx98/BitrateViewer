@@ -4,6 +4,9 @@
 #include <vector>
 #include <cstdint>
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -55,6 +58,7 @@ namespace Backend{
     std::string ArrayToStringChar(char array[],int length);
     FFmpegVersion getFFmpegVersion();
     std::string FFverInt2String(int version);
+    std::vector<std::string> findTemplate(fs::path path);
 };
 
 #endif
