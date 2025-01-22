@@ -16,6 +16,7 @@ class optsDialog : public QDialog
 public:
     std::vector<std::string> tmpls;
     INI *ini;
+    bool tmplexist=false;
 
     explicit optsDialog(QWidget *parent = nullptr,INI *ini = nullptr);
     ~optsDialog();

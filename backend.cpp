@@ -247,6 +247,7 @@ namespace Backend{
                 if (it.path().extension() == ".tmpl") tmpls.push_back(it.path().filename());
             }
         }
+        std::sort(tmpls.begin(),tmpls.end());
         return tmpls;
     }
 

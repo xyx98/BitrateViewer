@@ -15,6 +15,12 @@ MainWindow::MainWindow(QWidget *parent)
     ini= new INI(QApplication::applicationDirPath()+"/"+SETTINGFILE);
     workpath=QApplication::applicationDirPath().toLocal8Bit().toStdString();
     if (!fs::exists(workpath / ".cache")) fs::create_directory(workpath / ".cache");
+    if (!fs::exists(workpath / "template" / ini->getTmpl().toStdString())){
+        opts_ui = new optsDialog(this,ini);
+        opts_ui -> setWindowModality(Qt::ApplicationModal);
+        connect(opts_ui, SIGNAL(closed(bool)),this,SLOT(opts_close(bool)));
+        opts_ui->show();
+    }
     std::string html =plot::loadhtml(workpath.string()+"/template/"+ini->getTmpl().toStdString());
     Plot.setBaseHtml(html);
     CurrentHtml = (workpath / ".cache" / "Curr.html").string();
@@ -160,6 +166,12 @@ void MainWindow::opts_close(bool accepted){
             emit loadhtml(QUrl::fromLocalFile(QString::fromLocal8Bit(CurrentHtml.data())));
             loadStatus=1;
         }
+    }
+    else if (!fs::exists(workpath / "template" / ini->getTmpl().toStdString())){
+        opts_ui = new optsDialog(this,ini);
+        opts_ui->setWindowModality(Qt::ApplicationModal);
+        connect(opts_ui, SIGNAL(closed(bool)),this,SLOT(opts_close(bool)));
+        opts_ui->show();
     }
     opts_ui = nullptr;
 }

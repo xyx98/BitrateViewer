@@ -1,6 +1,7 @@
 #include "optsdialog.h"
 #include "ui_optsdialog.h"
 #include "backend.h"
+#include <QMessageBox>
 
 optsDialog::optsDialog(QWidget *parent,INI *ini)
     : QDialog(parent)
@@ -15,7 +16,11 @@ optsDialog::optsDialog(QWidget *parent,INI *ini)
         ui->listWidget->addItem(listItem);
         if (tmpl == ini->getTmpl()){
             ui->listWidget->setCurrentItem(listItem);
+            tmplexist=true;
         }
+    }
+    if(!tmplexist) {
+        QMessageBox::warning(this,"warning",QString("<p>template:%1 not exist.<br/>Pick a new one!</p>").arg(ini->getTmpl()));
     }
 }
 
@@ -35,6 +40,7 @@ void optsDialog::closeEvent(QCloseEvent *event)
 void optsDialog::on_buttonBox_accepted()
 {
     ini->setTmpl(ui->listWidget->currentItem()->text());
+    tmplexist=true;
     emit closed(true);
 }
 
