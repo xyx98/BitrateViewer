@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+  <div id="container" style="height: 100%"></div>
+  
+  <script type="text/javascript" src="{{{echarts}}}"></script>
+
+  <script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+    
+    var option;
+
+const data = generateData();
+const gopInfo = gopCalc(data);
+const bitratePerFrame = calcBitrateCfr(data.pkt_size,data.fpsNum,data.fpsDen);
+option = {
+  title: {
+    text: `${data.name} - ${data.codec}`,
+    left: 10
+  },
+  color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
+  toolbox: {
+    feature: {
+      restore: {
+        show: true
+      },
+      saveAsImage: {
+        pixelRatio: 2,
+        show: {{{isSave}}}
+      }
+    }
+  },
+  tooltip: {
+    trigger: 'axis',
+    confine:true,
+    extraCssText: 'max-width:400px; white-space: pre-wrap;word-break: break-all;word-wrap: break-word;',
+    axisPointer: {
+      type: 'line',
+      label:{
+      show:true,
+      snap: true,
+      formatter: function (params){
+        return `gop:  ${gopInfo[params.value][0]}-${gopInfo[params.value][1]}|${gopInfo[params.value][3]}\nframe: ${params.value}|${pts2time(data.pts[params.value])}|${data.pict_type[params.value]}|${bitratePerFrame[params.value].toFixed(3)} kbps`
+        }
+      }
+    },
+    valueFormatter: (value,index) => `${value.toFixed(2)} kbps`
+  },
+  grid: {
+    bottom: 90
+  },
+  dataZoom: [
+    {
+      type: 'inside',
+      filterMode : 'filterd'
+    },
+    {
+      type: 'slider'
+    }
+  ],
+  xAxis: {
+    data: data.x,
+    silent: false,
+    splitLine: {
+      show: false
+    },
+    splitArea: {
+      show: false
+    },
+    axisLabel: {
+      formatter: function(value,index){
+        return `${pts2time(data.pts[value])}`
+      }
+    }
+  },
+  yAxis: {
+    splitArea: {
+      show: false
+    },
+    axisLabel: {
+      formatter: '{value} kbps'
+    }
+  },
+  series: [
+    {
+      type: 'bar',
+      data: gopInfo.map((x) => x[2]),//calcBitrateCfr(data.pkt_size,data.fpsNum,data.fpsDen),
+      //sampling:'lttb', //if enable sampling,markline avg has wrong value
+      large: true,
+      symbol:['none','none'],
+      barCategoryGap:"0%",
+      markLine: {
+        symbol: ['none','none'],
+        data: [
+          { 
+            yAxis: data.avg, //use static markline
+            precision: 3,
+            silent: true,
+            //type: 'average',
+            name: 'avg' ,
+            label:{
+              formatter:"avg {c}kbps"
+            }
+          }
+        ]
+      },
+      itemStyle: {
+        color:function(params){
+          ft=data.pict_type[params.dataIndex];
+          if (ft=="B") return option.color[0];
+          else if (ft=="P") return option.color[1];
+          else if (ft=="I") return option.color[3];
+          else return option.color[6];
+        },
+      }
+    }
+  ]
+};
+function generateData() {
+  {{{datas}}}
+
+  return {
+    x: x,
+    y: y,
+    pts: pts,
+    pkt_size: pkt_size,
+    pict_type: pict_type,
+    key : key,
+    avg: avg,
+    length: length,
+    name: name,
+    codec: codec,
+    fpsNum: fpsNum,
+    fpsDen: fpsDen
+  };
+}
+
+function pts2time(pts){
+  h=0;
+  m=0;
+  s=Math.floor(pts/1000);
+  ms=pts%1000;
+  if (s>=60){
+    m=Math.floor(s/60);
+    s=s%60;
+    if (m>=60){
+      h=Math.floor(m/60);
+      m=m%60;
+    };
+  };
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(ms).padEnd(3, '0')}`;
+}
+
+function calcBitrateCfr(pkt_size,fpsNum,fpsDen){
+  return pkt_size.map((x) => 8.0*x/(1000/fpsNum*fpsDen));
+}
+
+function gopCalc(data){
+  var length=data.length;
+  var gopindex=0;
+  console.log(length);
+  var gopInfo=[];
+
+  var start=0;
+  var end=-1;
+  var avg=0;
+  var sum=0;
+  var dur=0;
+  for (let i=0; i<length; i++){
+    if (data.key[i]==1){
+            start=i;
+            sum=data.pkt_size[i]
+        }
+    else{
+        sum+=data.pkt_size[i]
+    }
+
+    if (i==length-1) {
+        end=i;
+    }
+    else{
+        if(data.key[i+1]==1){
+            end=i;
+        }
+    }
+    
+    if (end==i){
+        dur=(end-start+1)*(1000/data.fpsNum*data.fpsDen);
+        var info=[start,end,8*sum/dur,gopindex];
+        for(let j=0;j<end-start+1;j++){
+            gopInfo.push(info);
+        }
+        gopindex++;
+    }
+  }
+  return gopInfo
+}
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+  </script>
+</body>
+</html>
