@@ -44,7 +44,9 @@ namespace Backend{
         std::string codec_name = avcodec_get_name(codecpar->codec_id);
         AVCodecContext* codec_ctx = avcodec_alloc_context3(codec);
         codec_ctx->thread_count = av_cpu_count(); //set decode threads
+        codec_ctx->flags |= AV_CODEC_FLAG_COPY_OPAQUE;
         avcodec_parameters_to_context(codec_ctx, codecpar);
+
         if (avcodec_open2(codec_ctx, codec, nullptr) < 0) {
             std::cerr << "Could not open codec" << std::endl;
             return FrameInfoArray;
@@ -58,6 +60,12 @@ namespace Backend{
         // Read frames from the video stream
         while (av_read_frame(format_ctx, &packet) >= 0) {
             if (packet.stream_index == video_stream_idx) {
+                FrameData *fd;
+                packet.opaque_ref = av_buffer_allocz(sizeof(*fd));
+                fd = (FrameData*)packet.opaque_ref->data;
+                fd->pkt_pos  = packet.pos;
+                fd->pkt_size = packet.size;
+
                 // Decode video frame
                 int ret = avcodec_send_packet(codec_ctx, &packet);
                 if (ret < 0) {
@@ -73,11 +81,14 @@ namespace Backend{
                         std::cerr << "Error during decoding" << std::endl;
                         break;
                     }
+
+                FrameData *fd = frame->opaque_ref ? (FrameData*)frame->opaque_ref->data : NULL;
+
                 FrameInfo tmpFrameInfo={
                     av_get_picture_type_char(frame->pict_type),
-                    frame->pkt_size,
+                    fd?fd->pkt_size:-1,
                     frame->pts,
-                    frame->key_frame,
+                    (frame->flags & AV_FRAME_FLAG_KEY)?1:0,
                     frame->duration,
                     codec_name,
                     fpsNum,
