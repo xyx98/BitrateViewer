@@ -38,6 +38,7 @@ namespace Backend{
 
         int fpsNum=format_ctx->streams[video_stream_idx]->avg_frame_rate.num;
         int fpsDen=format_ctx->streams[video_stream_idx]->avg_frame_rate.den;
+        AVRational timebase = format_ctx->streams[video_stream_idx]->time_base;
         // Get codec parameters and codec context
         AVCodecParameters* codecpar = format_ctx->streams[video_stream_idx]->codecpar;
         const AVCodec* codec = avcodec_find_decoder(codecpar->codec_id);
@@ -54,8 +55,7 @@ namespace Backend{
 
         // Allocate frame and packet
         AVFrame* frame = av_frame_alloc();
-        AVPacket packet;
-        av_init_packet(&packet);
+        AVPacket packet= *av_packet_alloc();
 
         // Read frames from the video stream
         while (av_read_frame(format_ctx, &packet) >= 0) {
@@ -63,7 +63,6 @@ namespace Backend{
                 FrameData *fd;
                 packet.opaque_ref = av_buffer_allocz(sizeof(*fd));
                 fd = (FrameData*)packet.opaque_ref->data;
-                fd->pkt_pos  = packet.pos;
                 fd->pkt_size = packet.size;
 
                 // Decode video frame
@@ -87,9 +86,9 @@ namespace Backend{
                 FrameInfo tmpFrameInfo={
                     av_get_picture_type_char(frame->pict_type),
                     fd?fd->pkt_size:-1,
-                    frame->pts,
+                    std::llround((long double)frame->pts / timebase.den * timebase.num * 1000),
                     (frame->flags & AV_FRAME_FLAG_KEY)?1:0,
-                    frame->duration,
+                    (long double)frame->duration / timebase.den * timebase.num * 1000,
                     codec_name,
                     fpsNum,
                     fpsDen

@@ -16,7 +16,6 @@ extern "C" {
 
 // attached as opaque_ref to packets/frames
 typedef struct FrameData {
-    int64_t pkt_pos;
     int     pkt_size;
 } FrameData;
 
