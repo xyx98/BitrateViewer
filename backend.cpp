@@ -81,14 +81,14 @@ namespace Backend{
                         break;
                     }
 
-                FrameData *fd = frame->opaque_ref ? (FrameData*)frame->opaque_ref->data : NULL;
+                FrameData *fd = frame->opaque_ref ? (FrameData*)frame->opaque_ref->data : nullptr;
 
                 FrameInfo tmpFrameInfo={
                     av_get_picture_type_char(frame->pict_type),
                     fd?fd->pkt_size:-1,
                     std::llround((long double)frame->pts / timebase.den * timebase.num * 1000),
                     (frame->flags & AV_FRAME_FLAG_KEY)?1:0,
-                    (long double)frame->duration / timebase.den * timebase.num * 1000,
+                    static_cast<int64_t>((long double)frame->duration / timebase.den * timebase.num * 1000),
                     codec_name,
                     fpsNum,
                     fpsDen
@@ -153,6 +153,7 @@ namespace Backend{
         result.fpsNum=FrameInfoArray[0].fpsNum;
         result.fpsDen=FrameInfoArray[0].fpsDen;
         uint64_t totalsize =0 ;
+        uint64_t firstpts=FrameInfoArray[0].pts;
 
         for(int i=0;i<length;i++){
             result.frames[i]=i;
@@ -161,7 +162,7 @@ namespace Backend{
             result.pkt_size[i]=FrameInfoArray[i].pkt_size;
             if (i<length-1) result.bitrates[i]=8.0 * FrameInfoArray[i].pkt_size/(FrameInfoArray[i+1].pts-FrameInfoArray[i].pts);
             else result.bitrates[i]=8.0 * FrameInfoArray[i].pkt_size/FrameInfoArray[i].duration;
-            result.pts[i]=FrameInfoArray[i].pts;
+            result.pts[i]=FrameInfoArray[i].pts-firstpts;
             totalsize += FrameInfoArray[i].pkt_size * 8;
         }
 
@@ -254,7 +255,7 @@ namespace Backend{
         if (entry.status().type() == fs::file_type::directory){
             fs::directory_iterator list(path);
             for (auto& it:list){
-                if (it.path().extension() == ".tmpl") tmpls.push_back(it.path().filename());
+                if (it.path().extension() == ".tmpl") tmpls.push_back(it.path().filename().string());
             }
         }
         std::sort(tmpls.begin(),tmpls.end());

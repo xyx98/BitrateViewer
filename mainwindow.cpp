@@ -52,7 +52,7 @@ void MainWindow::on_actionopen_triggered()
             setup_polt(cachefile.string(),true,fileinfo.fileName().toStdString());
         }
         else{
-            synchronizer.addFuture(QtConcurrent::run([=](){setup_polt(filename.toStdString(),fileinfo.fileName().toStdString(),cachefile.string());}));
+            synchronizer.addFuture(QtConcurrent::run([=, this](){setup_polt(filename.toStdString(),fileinfo.fileName().toStdString(),cachefile.string());}));
         }
     }
     return;
