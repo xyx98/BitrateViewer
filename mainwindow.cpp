@@ -115,8 +115,7 @@ void MainWindow::LoadHTML(QUrl url){
 }
 
 inline std::string MainWindow::checksum(QString path,int maxCalcSize){
-    uint32_t KB=65536;
-    std::string checksum=SHA1::from_file(path.toLocal8Bit().toStdString(),KB*1024*maxCalcSize);
+    std::string checksum=SHA1::from_file(path.toLocal8Bit().toStdString(),16*1024*maxCalcSize);
     SHA1 sha1;
     QFileInfo fileinfo = QFileInfo(path);
     sha1.update(fileinfo.fileName().toLocal8Bit().toStdString());
